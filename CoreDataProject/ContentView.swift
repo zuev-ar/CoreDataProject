@@ -11,20 +11,43 @@ import CoreData
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var moc
 
-    @FetchRequest(entity: Wizard.entity(), sortDescriptors: [], animation: .default)
-    private var wizards: FetchedResults<Wizard>
+//    NSPredicate(format: "universe == %@", "Star Wars")
+//    NSPredicate(format: "universe < %@", "F")
+//    NSPredicate(format: "universe IN %@", ["Aliens", "Firefly", "Star Trek"])
+//    NSPredicate(format: "universe BEGINSWITH %@", "E")
+//    @FetchRequest(entity: Singer.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Singer.firstName, ascending: true)], predicate: nil)
+//    private var singers: FetchedResults<Singer>
+    @State private var lastNameFilter = "A"
 
     var body: some View {
         VStack {
-            List(wizards, id: \.self) { wizard in
-                Text(wizard.name ?? "Unknown")
+            FilteredList(filterKey: "lastName", filterValue: lastNameFilter) { (singer: Singer) in
+                Text("\(singer.wrappedFirstName) \(singer.wrappedLastName)")
             }
             
             Button("Add") {
-                let wizard = Wizard(context: moc)
-                wizard.name = "Harry Potter"
+                let taylor = Singer(context: moc)
+                taylor.firstName = "Taylor"
+                taylor.lastName = "Swift"
+
+                let ed = Singer(context: moc)
+                ed.firstName = "Ed"
+                ed.lastName = "Sheeran"
+
+                let adele = Singer(context: moc)
+                adele.firstName = "Adele"
+                adele.lastName = "Adkins"
             }
             .padding()
+            
+            Button("Show A") {
+                lastNameFilter = "A"
+            }
+            .padding()
+            
+            Button("Show S") {
+                lastNameFilter = "S"
+            }
             
             Button("Save") {
                 if moc.hasChanges {
@@ -39,13 +62,6 @@ struct ContentView: View {
         }
     }
 }
-
-private let itemFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .short
-    formatter.timeStyle = .medium
-    return formatter
-}()
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
