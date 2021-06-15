@@ -80,7 +80,7 @@ struct DynamicFilteringContentView: View {
 
     var body: some View {
         VStack {
-            FilteredList(filterKey: "lastName", filterValue: lastNameFilter) { (singer: Singer) in
+            FilteredList(filterKey: "lastName", filterValue: lastNameFilter, predicate: .begingWith, sortDescriptors: [NSSortDescriptor(keyPath: \Singer.firstName, ascending: true)]) { (singer: Singer) in
                 Text("\(singer.wrappedFirstName) \(singer.wrappedLastName)")
             }
 
